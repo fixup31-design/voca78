@@ -1,0 +1,470 @@
+<title>중1 영어 7·8과 단어카드</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#F4F8FB; --card:#FFFFFF; --ink:#22313F; --sub:#5C6B7A;
+  --accent:#2F7FD6; --accent-soft:#E3EEF9; --green:#2EA36B; --green-soft:#E2F3EA;
+  --coral:#E25C4A; --coral-soft:#FBE9E6; --line:#DBE5EE; --star:#F3B52D;
+  --shadow:0 2px 10px rgba(34,49,63,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10181F; --card:#1A242E; --ink:#ECF2F7; --sub:#9AAAB8;
+    --accent:#5BA1E8; --accent-soft:#1E3043; --green:#45BD85; --green-soft:#1C3329;
+    --coral:#EC7A6A; --coral-soft:#3A2420; --line:#2A3744; --star:#F3B52D;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10181F; --card:#1A242E; --ink:#ECF2F7; --sub:#9AAAB8;
+  --accent:#5BA1E8; --accent-soft:#1E3043; --green:#45BD85; --green-soft:#1C3329;
+  --coral:#EC7A6A; --coral-soft:#3A2420; --line:#2A3744; --star:#F3B52D;
+  --shadow:0 2px 10px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  padding-inline:16px; padding-block:0; min-height:100vh;
+}
+.wrap{max-width:460px; margin:0 auto; padding-block:20px 32px}
+.eng{font-family:"Andika","Comic Sans MS",-apple-system,sans-serif}
+
+/* ---------- 홈 ---------- */
+.home-head{text-align:center; margin-bottom:6px}
+.home-head .mascot{font-size:40px; line-height:1}
+h1{font-size:22px; margin:8px 0 4px; text-wrap:balance}
+.home-head p.sub{color:var(--sub); font-size:14px; margin:0 0 4px}
+.howto{
+  background:var(--accent-soft); border-radius:14px; padding:12px 14px;
+  font-size:14px; line-height:1.6; margin:14px 0 18px;
+}
+.howto b{color:var(--accent)}
+.total{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-size:14px; color:var(--sub); margin:0 2px 8px;
+}
+.total b{color:var(--ink); font-variant-numeric:tabular-nums}
+.decks{display:flex; flex-direction:column; gap:12px}
+.deck{
+  width:100%; text-align:left; background:var(--card); border:1px solid var(--line);
+  border-radius:16px; padding:14px 16px; cursor:pointer; color:var(--ink);
+  font:inherit; box-shadow:var(--shadow);
+}
+.deck:active{transform:scale(.985)}
+.deck .row1{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.deck .name{font-weight:700; font-size:16px}
+.deck .lesson{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.04em}
+.deck .row2{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:8px}
+.deck .left{font-size:13px; color:var(--sub); font-variant-numeric:tabular-nums}
+.deck .done-badge{font-size:13px; color:var(--green); font-weight:700}
+.bar{flex:1; height:8px; border-radius:4px; background:var(--line); overflow:hidden}
+.bar i{display:block; height:100%; background:var(--green); border-radius:4px}
+.reset-line{margin-top:10px; text-align:right}
+.reset-btn{
+  background:none; border:none; color:var(--sub); font-size:12px;
+  text-decoration:underline; cursor:pointer; padding:4px;
+}
+
+/* ---------- 학습 ---------- */
+.top{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px}
+.back{
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  padding:8px 12px; font-size:14px; color:var(--ink); cursor:pointer; font:inherit;
+}
+.counter{font-size:13px; color:var(--sub); font-variant-numeric:tabular-nums; text-align:right}
+.counter b{color:var(--ink)}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:22px;
+  box-shadow:var(--shadow); padding:28px 20px 22px; text-align:center;
+}
+.deck-tag{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.04em; margin-bottom:14px}
+.word{
+  font-size:clamp(30px,11vw,46px); font-weight:700; line-height:1.15;
+  margin:0 0 6px; word-break:keep-all; text-wrap:balance;
+}
+.word.long{font-size:clamp(22px,7.5vw,32px)}
+.pron{font-size:17px; color:var(--sub); margin:0 0 16px}
+.mean{
+  font-size:21px; font-weight:700; line-height:1.4; margin:0 auto 18px;
+  padding:12px 14px; background:var(--accent-soft); border-radius:12px;
+  max-width:34ch; word-break:keep-all;
+}
+.listen{display:flex; justify-content:center; gap:10px; margin-bottom:12px}
+.listen button{
+  font:inherit; font-size:15px; padding:10px 16px; border-radius:999px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
+}
+.listen button:active{transform:scale(.96)}
+.hint{font-size:14px; color:var(--sub); margin:0}
+.answers{display:flex; gap:12px; margin-top:16px}
+.answers button{
+  flex:1; font:inherit; font-size:18px; font-weight:700; padding:16px 8px;
+  border-radius:16px; border:none; cursor:pointer; color:#fff;
+}
+.answers .no{background:var(--coral)}
+.answers .yes{background:var(--green)}
+.answers button:active{transform:scale(.97)}
+.answers .label-sub{display:block; font-size:12px; font-weight:400; margin-top:3px; opacity:.9}
+
+/* ---------- 판 끝 / 완료 ---------- */
+.result{
+  background:var(--card); border:1px solid var(--line); border-radius:22px;
+  box-shadow:var(--shadow); padding:32px 20px; text-align:center;
+}
+.result .big{font-size:48px; line-height:1; margin-bottom:12px}
+.result h2{font-size:20px; margin:0 0 8px; text-wrap:balance}
+.result p{font-size:15px; color:var(--sub); line-height:1.6; margin:0 0 20px}
+.result p b{color:var(--ink)}
+.result .stars{font-size:26px; letter-spacing:4px; margin-bottom:14px; color:var(--star)}
+.btn-col{display:flex; flex-direction:column; gap:10px}
+.btn-main{
+  font:inherit; font-size:17px; font-weight:700; padding:15px; border-radius:14px;
+  border:none; background:var(--accent); color:#fff; cursor:pointer;
+}
+.btn-quiet{
+  font:inherit; font-size:15px; padding:13px; border-radius:14px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer;
+}
+button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+</style>
+
+<div class="wrap">
+  <!-- 홈 -->
+  <section id="home">
+    <div class="home-head">
+      <div class="mascot">🐥</div>
+      <h1>중1 영어 7·8과 단어카드</h1>
+      <p class="sub">동아출판(윤정미) · 단어 122개</p>
+    </div>
+    <div class="howto">
+      ① 카드를 누르면 <b>소리로 읽어 줘요</b> → 세 번 따라 말해요<br>
+      ② 알면 <b>알아요</b>, 모르면 <b>몰라요</b>를 눌러요<br>
+      ③ 「알아요」 한 단어는 빠지고, <b>모르는 단어만 다시</b> 나와요
+    </div>
+    <div class="total"><span>지금까지 외운 단어</span><span><b id="totalKnown">0</b> / 122</span></div>
+    <div class="decks" id="deckList"></div>
+    <div class="reset-line">
+      <button class="reset-btn" id="resetAll">기록 전부 지우고 처음부터</button>
+    </div>
+  </section>
+
+  <!-- 학습 -->
+  <section id="study" hidden>
+    <div class="top">
+      <button class="back" id="backBtn">← 처음으로</button>
+      <div class="counter" id="studyCounter"></div>
+    </div>
+    <div class="card">
+      <div class="deck-tag" id="deckTag"></div>
+      <p class="word eng" id="word"></p>
+      <p class="pron" id="pron"></p>
+      <p class="mean" id="mean"></p>
+      <div class="listen">
+        <button id="againBtn">🔊 다시 듣기</button>
+        <button id="slowBtn">🐢 천천히 듣기</button>
+      </div>
+      <p class="hint">잘 듣고 큰 소리로 세 번 따라 말해 보세요!</p>
+    </div>
+    <div class="answers">
+      <button class="no" id="noBtn">몰라요<span class="label-sub">또 보여 줘요</span></button>
+      <button class="yes" id="yesBtn">알아요!<span class="label-sub">이제 안 나와요</span></button>
+    </div>
+  </section>
+
+  <!-- 판 끝 -->
+  <section id="result" hidden>
+    <div class="result">
+      <div class="big" id="resultEmoji">🎯</div>
+      <div class="stars" id="resultStars"></div>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <div class="btn-col" id="resultBtns"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ---------- 단어 데이터 (동아 윤정미 중1 · 2022 개정 · 7~8과) ----------
+const DECKS = [
+ {id:"l7core", lesson:"7과 · Find Your Dream", name:"꼭 알아야 할 단어", words:[
+  ["rice","라이스","쌀, 밥"],
+  ["mall","몰","쇼핑몰"],
+  ["chess","체스","체스"],
+  ["wave","웨이브","파도, 물결; 흔들다"],
+  ["calm","캄","차분한, 고요한"],
+  ["shoot","슛","촬영하다"],
+  ["skill","스킬","기술, 능력"],
+  ["moment","모먼트","순간"],
+  ["studio","스튜디오","스튜디오, 작업실"],
+  ["signal","시그널","신호, 신호기"],
+  ["effect","이펙트","효과, 영향"],
+  ["delete","딜리트","삭제하다, 지우다"],
+  ["record","레코드","기록(하다), 녹음하다"],
+  ["engineer","엔지니어","엔지니어, 기술자"],
+  ["manager","매니저","매니저, 관리자"],
+  ["director","디렉터","감독, 책임자"],
+  ["editor","에디터","편집자"],
+  ["location","로케이션","위치, 장소"],
+  ["interview","인터뷰","인터뷰(하다), 면접"],
+  ["capture","캡처","잡다, 포획하다"],
+  ["photography","퍼타그러피","사진술"],
+  ["photographer","퍼타그러퍼","사진작가"],
+  ["storytelling","스토리텔링","스토리텔링, 이야기하기"],
+  ["wrangler","랭글러","카우보이, 말 조련사"],
+  ["be in charge of","비 인 차지 오브","~을 담당하다, 책임지다"],
+  ["take care of","테이크 케어 오브","돌보다, 처리하다"],
+ ]},
+ {id:"l7text", lesson:"7과 · Find Your Dream", name:"본문에 나오는 단어", words:[
+  ["ball","볼","공"],
+  ["beach","비치","해변, 바닷가"],
+  ["movie","무비","영화"],
+  ["animal","애니멀","동물"],
+  ["camera","캐머라","카메라, 사진기"],
+  ["enjoy","인조이","즐기다"],
+  ["begin","비긴","시작하다"],
+  ["order","오더","주문(하다), 순서"],
+  ["scene","씬","장면, 현장"],
+  ["film","필름","영화; 촬영하다"],
+  ["sound","사운드","소리; ~하게 들리다"],
+  ["travel","트래블","여행(하다)"],
+  ["create","크리에이트","만들다, 창작하다"],
+  ["drone","드론","드론, 무인 항공기"],
+  ["actor","액터","배우, 연기자"],
+  ["perfect","퍼펙트","완벽한"],
+  ["excited","익사이티드","신난, 흥분한"],
+  ["sometimes","섬타임즈","가끔, 때때로"],
+  ["plastic","플래스틱","플라스틱(의)"],
+  ["friendship","프렌드십","우정"],
+  ["challenge","챌린지","도전, 과제"],
+  ["container","컨테이너","용기, 컨테이너"],
+  ["a lot of","어 랏 오브","많은, 다수의"],
+  ["of course","오브 코스","물론, 당연히"],
+  ["work hard","워크 하드","열심히 하다, 노력하다"],
+  ["together with","투게더 위드","~와 함께"],
+  ["for a long time","포 어 롱 타임","오랫동안, 오래"],
+ ]},
+ {id:"l8core", lesson:"8과 · Be Smart Online", name:"꼭 알아야 할 단어", words:[
+  ["smart","스마트","똑똑한, 세련된"],
+  ["hole","홀","구멍"],
+  ["post","포스트","게시물; 게시하다"],
+  ["list","리스트","목록; 나열하다"],
+  ["press","프레스","누르다"],
+  ["noisy","노이지","시끄러운"],
+  ["spicy","스파이시","매운"],
+  ["selfie","셀피","셀카, 셀피"],
+  ["shout","샤우트","외치다, 외침"],
+  ["knock","낙","노크, 두드림; 두드리다"],
+  ["social","소셜","사회의, 사교적인"],
+  ["boring","보링","지루한, 따분한"],
+  ["asleep","어슬립","잠든"],
+  ["forever","포에버","영원히"],
+  ["review","리뷰","검토(하다), 복습(하다)"],
+  ["unique","유니크","독특한, 유일한"],
+  ["upstairs","업스테어즈","위층, 위로"],
+  ["cottage","카티지","시골집, 오두막"],
+  ["forgive","포기브","용서하다"],
+  ["personal","퍼스널","개인적인, 사적인"],
+  ["follower","팔로워","팔로워, 추종자"],
+  ["shocking","쇼킹","충격적인"],
+  ["permission","퍼미션","허가, 허락"],
+  ["break into","브레이크 인투","침입하다"],
+  ["in surprise","인 서프라이즈","놀라서"],
+ ]},
+ {id:"l8text", lesson:"8과 · Be Smart Online", name:"본문에 나오는 단어", words:[
+  ["bed","베드","침대"],
+  ["bear","베어","곰"],
+  ["hair","헤어","머리카락, 털"],
+  ["rain","레인","비; 비가 오다"],
+  ["dark","다크","어두운, 검은"],
+  ["jump","점프","뛰어오르다, 뛰다"],
+  ["soup","수프","수프, 국"],
+  ["bowl","보울","그릇, 사발"],
+  ["cry","크라이","울다, 외침"],
+  ["small","스몰","작은"],
+  ["chair","체어","의자"],
+  ["table","테이블","테이블, 탁자"],
+  ["smile","스마일","미소; 미소 짓다"],
+  ["photo","포토","사진"],
+  ["clean","클린","청소하다; 깨끗한"],
+  ["share","셰어","공유하다, 나누다"],
+  ["hour","아워","시간"],
+  ["summer","서머","여름"],
+  ["golden","골든","황금색의"],
+  ["tired","타이어드","피곤한, 싫증난"],
+  ["bored","보어드","지루한, 싫증난"],
+  ["answer","앤서","대답(하다), 답"],
+  ["forest","포리스트","숲, 삼림"],
+  ["decide","디사이드","결정하다"],
+  ["twice","트와이스","두 번, 2배로"],
+  ["picture","픽처","사진, 그림"],
+  ["everyday","에브리데이","일상의"],
+  ["terrible","테러블","끔찍한, 형편없는"],
+  ["however","하우에버","그러나, 하지만"],
+  ["angrily","앵그릴리","화가 나서"],
+  ["delete","딜리트","삭제하다, 지우다"],
+  ["a little","어 리틀","조금, 약간"],
+  ["look at","룩 앳","보다, 살펴보다"],
+  ["a lot of","어 랏 오브","많은, 다수의"],
+  ["at first","앳 퍼스트","처음에는"],
+  ["one day","원 데이","언젠가, 어느 날"],
+  ["every day","에브리 데이","매일, 날마다"],
+  ["take a walk","테이크 어 워크","산책하다"],
+  ["fall asleep","폴 어슬립","잠들다"],
+  ["work hard","워크 하드","열심히 하다, 노력하다"],
+  ["live on","리브 온","~으로 살아가다"],
+  ["think about","씽크 어바웃","~에 대해 생각하다"],
+  ["again and again","어겐 앤 어겐","반복해서, 계속해서"],
+  ["social media","소셜 미디어","소셜 미디어"],
+ ]},
+];
+const TOTAL = DECKS.reduce((n,d)=>n+d.words.length,0);
+
+// ---------- 아는 단어 저장 (이 핸드폰에만 저장됨) ----------
+function loadKnown(id){ try{ return new Set(JSON.parse(localStorage.getItem("voca78."+id)||"[]")); }catch(e){ return new Set(); } }
+function saveKnown(id,set){ try{ localStorage.setItem("voca78."+id, JSON.stringify([...set])); }catch(e){} }
+function clearKnown(id){ try{ localStorage.removeItem("voca78."+id); }catch(e){} }
+
+// ---------- 소리 ----------
+let voicePick=null;
+function pickVoice(){
+  const vs=(speechSynthesis.getVoices()||[]).filter(v=>v.lang&&v.lang.toLowerCase().startsWith("en"));
+  voicePick = vs.find(v=>/samantha|aria|jenny|google us english/i.test(v.name))
+           || vs.find(v=>v.lang==="en-US") || vs[0] || null;
+}
+if("speechSynthesis" in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged=pickVoice;
+}
+function speak(text,rate){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US"; u.rate=rate;
+    if(voicePick) u.voice=voicePick;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+// ---------- 화면 ----------
+const $=id=>document.getElementById(id);
+const screens={home:$("home"),study:$("study"),result:$("result")};
+function show(name){ for(const k in screens) screens[k].hidden=(k!==name); window.scrollTo(0,0); }
+
+// 홈 그리기
+function renderHome(){
+  let totalKnown=0;
+  const list=$("deckList"); list.innerHTML="";
+  DECKS.forEach(d=>{
+    const known=loadKnown(d.id);
+    totalKnown+=known.size;
+    const left=d.words.length-known.size;
+    const pct=Math.round(known.size/d.words.length*100);
+    const b=document.createElement("button");
+    b.className="deck";
+    b.innerHTML=
+      '<div class="row1"><span class="name">'+d.name+'</span><span class="lesson">'+d.lesson+'</span></div>'+
+      '<div class="row2">'+
+        (left===0
+          ? '<span class="done-badge">🎉 다 외웠어요!</span>'
+          : '<span class="left">남은 단어 <b>'+left+'</b>개 / '+d.words.length+'개</span>')+
+        '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '</div>';
+    b.addEventListener("click",()=>startDeck(d));
+    list.appendChild(b);
+  });
+  $("totalKnown").textContent=totalKnown;
+}
+
+// ---------- 학습 진행 ----------
+let cur=null; // {deck, queue, idx, missed, roundTotal, known}
+function startDeck(deck){
+  const known=loadKnown(deck.id);
+  const queue=deck.words.filter(w=>!known.has(w[0]));
+  if(queue.length===0){ showDone(deck); return; }
+  cur={deck,queue,idx:0,missed:[],roundTotal:queue.length,known};
+  show("study");
+  renderCard();
+}
+function renderCard(){
+  const w=cur.queue[cur.idx];
+  $("deckTag").textContent=cur.deck.lesson+" · "+cur.deck.name;
+  const wordEl=$("word");
+  wordEl.textContent=w[0];
+  wordEl.classList.toggle("long",w[0].length>10);
+  $("pron").textContent="["+w[1]+"]";
+  $("mean").textContent=w[2];
+  $("studyCounter").innerHTML="이번 판 <b>"+(cur.idx+1)+"</b> / "+cur.roundTotal+"개";
+  setTimeout(()=>speak(w[0],0.8),300);
+}
+$("againBtn").addEventListener("click",()=>speak(cur.queue[cur.idx][0],0.8));
+$("slowBtn").addEventListener("click",()=>speak(cur.queue[cur.idx][0],0.5));
+$("yesBtn").addEventListener("click",()=>{
+  const w=cur.queue[cur.idx];
+  cur.known.add(w[0]); saveKnown(cur.deck.id,cur.known);
+  next();
+});
+$("noBtn").addEventListener("click",()=>{
+  cur.missed.push(cur.queue[cur.idx]);
+  next();
+});
+function next(){
+  if("speechSynthesis" in window){ try{speechSynthesis.cancel();}catch(e){} }
+  cur.idx++;
+  if(cur.idx<cur.queue.length){ renderCard(); return; }
+  // 한 판 끝
+  if(cur.missed.length===0){ showDone(cur.deck); }
+  else{ showRoundEnd(); }
+}
+function showRoundEnd(){
+  const got=cur.roundTotal-cur.missed.length;
+  const stars = got===cur.roundTotal?"★★★": got>=cur.roundTotal*0.6?"★★☆": got>0?"★☆☆":"☆☆☆";
+  $("resultEmoji").textContent="💪";
+  $("resultStars").textContent=stars;
+  $("resultTitle").textContent="잘했어요!";
+  $("resultText").innerHTML="이번 판 "+cur.roundTotal+"개 중 <b>"+got+"개</b>를 알았어요.<br>남은 <b>"+cur.missed.length+"개</b>만 다시 볼까요?";
+  const btns=$("resultBtns"); btns.innerHTML="";
+  const go=document.createElement("button");
+  go.className="btn-main"; go.textContent="남은 "+cur.missed.length+"개 다시 보기";
+  go.addEventListener("click",()=>{
+    cur.queue=cur.missed; cur.missed=[]; cur.idx=0; cur.roundTotal=cur.queue.length;
+    show("study"); renderCard();
+  });
+  const home=document.createElement("button");
+  home.className="btn-quiet"; home.textContent="오늘은 여기까지 (처음 화면)";
+  home.addEventListener("click",goHome);
+  btns.append(go,home);
+  show("result");
+}
+function showDone(deck){
+  $("resultEmoji").textContent="🎉";
+  $("resultStars").textContent="★★★";
+  $("resultTitle").textContent="「"+deck.name+"」을 전부 외웠어요!";
+  $("resultText").innerHTML=deck.lesson+" 단어 <b>"+deck.words.length+"개</b>를 모두 「알아요」 했어요.<br>정말 대단해요! 다른 묶음도 해 볼까요?";
+  const btns=$("resultBtns"); btns.innerHTML="";
+  const home=document.createElement("button");
+  home.className="btn-main"; home.textContent="처음 화면으로";
+  home.addEventListener("click",goHome);
+  const redo=document.createElement("button");
+  redo.className="btn-quiet"; redo.textContent="이 묶음 처음부터 다시 외우기";
+  redo.addEventListener("click",()=>{ clearKnown(deck.id); startDeck(deck); });
+  btns.append(home,redo);
+  show("result");
+}
+function goHome(){
+  if("speechSynthesis" in window){ try{speechSynthesis.cancel();}catch(e){} }
+  renderHome(); show("home");
+}
+$("backBtn").addEventListener("click",goHome);
+$("resetAll").addEventListener("click",()=>{
+  if(confirm("지금까지 「알아요」 한 기록을 전부 지우고 처음부터 할까요?")){
+    DECKS.forEach(d=>clearKnown(d.id));
+    renderHome();
+  }
+});
+
+renderHome();
+show("home");
+</script>
