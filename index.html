@@ -63,6 +63,13 @@ h1{font-size:22px; margin:8px 0 4px; text-wrap:balance}
 .quiz-sec{margin-top:26px}
 .quiz-sec h2{font-size:17px; margin:0 0 4px}
 .quiz-sec p.sub{color:var(--sub); font-size:13px; margin:0 0 10px}
+.mode-row{display:flex; gap:8px; margin:0 0 10px}
+.mode-btn{
+  flex:1; font:inherit; font-size:14px; font-weight:700; padding:10px;
+  border-radius:999px; border:1px solid var(--line); background:var(--card);
+  color:var(--sub); cursor:pointer;
+}
+.mode-btn.active{background:var(--accent); border-color:var(--accent); color:#fff}
 .quiz-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .quiz-btn{
   font:inherit; font-size:14px; line-height:1.4; padding:12px 8px; border-radius:14px;
@@ -83,6 +90,15 @@ h1{font-size:22px; margin:8px 0 4px; text-wrap:balance}
 .opt:disabled{cursor:default; opacity:.55}
 .opt.correct{border-color:var(--green); background:var(--green-soft); color:var(--green); opacity:1}
 .opt.wrong{border-color:var(--coral); background:var(--coral-soft); color:var(--coral); opacity:1}
+.write-hint{letter-spacing:3px; color:var(--sub); font-size:20px; margin:0 0 10px; word-break:break-all}
+.write-input{
+  width:100%; font-size:22px; font-weight:700; text-align:center; padding:12px;
+  border:2px solid var(--line); border-radius:12px; background:var(--bg); color:var(--ink);
+}
+.write-input:focus{outline:none; border-color:var(--accent)}
+.write-fb{font-size:17px; font-weight:700; margin:12px 0 0; line-height:1.5; word-break:keep-all}
+.write-fb.ok{color:var(--green)}
+.write-fb.no{color:var(--coral)}
 .reset-line{margin-top:10px; text-align:right}
 .reset-btn{
   background:none; border:none; color:var(--sub); font-size:12px;
@@ -175,7 +191,11 @@ button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
     <div class="decks" id="deckList"></div>
     <div class="quiz-sec">
       <h2>📝 시험 보기</h2>
-      <p class="sub">10문제 · 듣고 뜻 고르기 + 뜻 보고 영어 고르기</p>
+      <p class="sub" id="quizModeDesc">10문제 · 듣고 뜻 고르기 + 뜻 보고 영어 고르기</p>
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeChoice">고르기 시험</button>
+        <button class="mode-btn" id="modeWrite">쓰기 시험</button>
+      </div>
       <div class="quiz-grid" id="quizList"></div>
     </div>
     <div class="reset-line">
@@ -196,8 +216,17 @@ button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
       <p class="mean" id="quizMean" hidden></p>
       <div class="listen" id="quizListen">
         <button id="quizAgainBtn">🔊 다시 듣기</button>
+        <button id="quizSlowBtn">🐢 천천히 듣기</button>
       </div>
       <div class="opts" id="quizOpts"></div>
+      <div id="writeBox" hidden>
+        <p class="write-hint eng" id="writeHint"></p>
+        <input class="write-input eng" id="writeInput" type="text" lang="en"
+               autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false"
+               placeholder="영어로 써 보세요">
+        <button class="btn-main" id="writeSubmit" style="width:100%; margin-top:12px">확인</button>
+        <p class="write-fb" id="writeFb"></p>
+      </div>
       <button class="btn-main" id="quizNext" hidden style="margin-top:16px; width:100%">다음 문제</button>
     </div>
   </section>
@@ -575,9 +604,22 @@ function showDone(deck){
 // ---------- 시험 ----------
 const ALL_WORDS=(()=>{ const m=new Map(); DECKS.forEach(d=>d.words.forEach(w=>{ if(!m.has(w[0])) m.set(w[0],w); })); return [...m.values()]; })();
 let quiz=null;
+let quizMode="choice"; // choice: 고르기 / write: 쓰기(받아쓰기)
+function setMode(m){
+  quizMode=m;
+  $("modeChoice").classList.toggle("active",m==="choice");
+  $("modeWrite").classList.toggle("active",m==="write");
+  $("quizModeDesc").textContent = m==="choice"
+    ? "10문제 · 듣고 뜻 고르기 + 뜻 보고 영어 고르기"
+    : "10문제 · 뜻을 보고 듣고, 영어 철자를 직접 써요";
+}
+$("modeChoice").addEventListener("click",()=>setMode("choice"));
+$("modeWrite").addEventListener("click",()=>setMode("write"));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function startQuiz(title,pool){
+  const mode=quizMode;
   const qs=shuffle([...pool]).slice(0,10).map(w=>{
+    if(mode==="write") return {w,type:"write"};
     const type=Math.random()<0.5?"mean":"word"; // mean: 듣고 뜻 고르기 / word: 뜻 보고 영어 고르기
     const key=type==="mean"?2:0;
     const opts=[w];
@@ -587,25 +629,41 @@ function startQuiz(title,pool){
     }
     return {w,type,opts:shuffle(opts)};
   });
-  quiz={title,pool,qs,idx:0,score:0,missed:[]};
+  quiz={title,pool,qs,idx:0,score:0,missed:[],mode};
   show("quiz"); renderQuiz();
 }
 function renderQuiz(){
   const q=quiz.qs[quiz.idx];
+  const isWrite=q.type==="write";
   const isMean=q.type==="mean";
-  $("quizTag").textContent=quiz.title;
+  $("quizTag").textContent=quiz.title+(isWrite?" · 쓰기 시험":"");
   $("quizCounter").innerHTML="문제 <b>"+(quiz.idx+1)+"</b> / "+quiz.qs.length;
-  $("quizLabel").textContent=isMean?"잘 듣고, 뜻을 골라 보세요":"이 뜻을 가진 영어 단어는?";
   $("quizWord").hidden=!isMean;
   $("quizMean").hidden=isMean;
-  $("quizListen").hidden=!isMean;
+  $("quizListen").hidden=!(isMean||isWrite);
+  $("writeBox").hidden=!isWrite;
+  $("quizOpts").innerHTML="";
+  $("quizNext").hidden=true;
+  if(isWrite){
+    $("quizLabel").textContent="이 뜻의 영어 단어를 듣고, 철자를 써 보세요";
+    $("quizMean").textContent=q.w[2];
+    // 글자 수 힌트: 글자는 _, 띄어쓰기는 그대로
+    $("writeHint").textContent=q.w[0].split(" ").map(p=>"_".repeat(p.length)).join("  ");
+    const inp=$("writeInput");
+    inp.disabled=false; inp.value="";
+    $("writeSubmit").hidden=false;
+    const fb=$("writeFb"); fb.textContent=""; fb.className="write-fb";
+    setTimeout(()=>{ playWord(q.w[0],false); inp.focus(); },300);
+    return;
+  }
+  $("quizLabel").textContent=isMean?"잘 듣고, 뜻을 골라 보세요":"이 뜻을 가진 영어 단어는?";
   if(isMean){
     $("quizWord").textContent=q.w[0];
     $("quizWord").classList.toggle("long",q.w[0].length>10);
   }else{
     $("quizMean").textContent=q.w[2];
   }
-  const box=$("quizOpts"); box.innerHTML="";
+  const box=$("quizOpts");
   q.opts.forEach(o=>{
     const b=document.createElement("button");
     b.className="opt"+(isMean?"":" eng");
@@ -613,9 +671,37 @@ function renderQuiz(){
     b.addEventListener("click",()=>answerQuiz(o,b));
     box.appendChild(b);
   });
-  $("quizNext").hidden=true;
   if(isMean) setTimeout(()=>playWord(q.w[0],false),300);
 }
+function submitWrite(){
+  const q=quiz.qs[quiz.idx];
+  const inp=$("writeInput");
+  const norm=s=>s.toLowerCase().replace(/\s+/g," ").trim();
+  if(!norm(inp.value)){ inp.focus(); return; }
+  const ok = norm(inp.value)===norm(q.w[0]);
+  const fb=$("writeFb");
+  if(ok){
+    quiz.score++;
+    fb.textContent="⭕ 정답! "+q.w[0];
+    fb.className="write-fb ok";
+  }else{
+    quiz.missed.push(q.w);
+    fb.textContent="❌ 정답은 「"+q.w[0]+"」 — 내가 쓴 것: "+inp.value.trim();
+    fb.className="write-fb no";
+  }
+  inp.disabled=true;
+  $("writeSubmit").hidden=true;
+  playWord(q.w[0],false);
+  $("quizNext").textContent = quiz.idx+1>=quiz.qs.length ? "결과 보기" : "다음 문제";
+  $("quizNext").hidden=false;
+}
+$("writeSubmit").addEventListener("click",submitWrite);
+$("writeInput").addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return;
+  e.preventDefault();
+  if(!$("writeSubmit").hidden) submitWrite();
+  else if(!$("quizNext").hidden) $("quizNext").click();
+});
 function answerQuiz(o,btn){
   const q=quiz.qs[quiz.idx];
   const key=q.type==="mean"?2:0;
@@ -636,6 +722,7 @@ $("quizNext").addEventListener("click",()=>{
   if(quiz.idx<quiz.qs.length) renderQuiz(); else showQuizEnd();
 });
 $("quizAgainBtn").addEventListener("click",()=>playWord(quiz.qs[quiz.idx].w[0],false));
+$("quizSlowBtn").addEventListener("click",()=>playWord(quiz.qs[quiz.idx].w[0],true));
 $("quizBack").addEventListener("click",goHome);
 function showQuizEnd(){
   const n=quiz.qs.length, s=quiz.score;
@@ -660,7 +747,7 @@ function showQuizEnd(){
   const again=document.createElement("button");
   again.className=quiz.missed.length?"btn-quiet":"btn-main";
   again.textContent="한 번 더 시험 보기";
-  again.addEventListener("click",()=>startQuiz(quiz.title,quiz.pool));
+  again.addEventListener("click",()=>{ quizMode=quiz.mode; startQuiz(quiz.title,quiz.pool); });
   const home=document.createElement("button");
   home.className="btn-quiet"; home.textContent="처음 화면으로";
   home.addEventListener("click",goHome);
