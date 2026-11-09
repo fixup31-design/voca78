@@ -97,6 +97,11 @@ h1{font-size:22px; margin:8px 0 4px; text-wrap:balance}
 }
 .listen button:active{transform:scale(.96)}
 .hint{font-size:14px; color:var(--sub); margin:0}
+.sound-help{margin-top:12px; font-size:13px; color:var(--sub); text-align:left}
+.sound-help summary{cursor:pointer; text-align:center; list-style:none}
+.sound-help summary::-webkit-details-marker{display:none}
+.sound-help ol{margin:8px 0 0; padding-left:20px; line-height:1.7}
+.sound-help b{color:var(--ink)}
 .answers{display:flex; gap:12px; margin-top:16px}
 .answers button{
   flex:1; font:inherit; font-size:18px; font-weight:700; padding:16px 8px;
@@ -166,6 +171,14 @@ button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
         <button id="slowBtn">🐢 천천히 듣기</button>
       </div>
       <p class="hint">잘 듣고 큰 소리로 세 번 따라 말해 보세요!</p>
+      <details class="sound-help">
+        <summary>🔇 소리가 안 나요?</summary>
+        <ol>
+          <li>🔊 <b>다시 듣기</b> 단추를 눌러 보세요</li>
+          <li>아이폰은 옆면 <b>무음 스위치를 끄세요</b> (주황색이 보이면 무음 상태)</li>
+          <li>소리 크기(볼륨)를 올려 보세요</li>
+        </ol>
+      </details>
     </div>
     <div class="answers">
       <button class="no" id="noBtn">몰라요<span class="label-sub">또 보여 줘요</span></button>
@@ -340,13 +353,28 @@ if("speechSynthesis" in window){
 function speak(text,rate){
   if(!("speechSynthesis" in window)) return;
   try{
-    speechSynthesis.cancel();
+    if(speechSynthesis.speaking||speechSynthesis.pending) speechSynthesis.cancel();
+    speechSynthesis.resume();
     const u=new SpeechSynthesisUtterance(text);
     u.lang="en-US"; u.rate=rate;
     if(voicePick) u.voice=voicePick;
     speechSynthesis.speak(u);
   }catch(e){}
 }
+// 핸드폰 브라우저는 손가락이 화면에 닿은 순간에만 소리를 허락한다.
+// 첫 터치 때 무음 한 마디를 재생해 소리 통로를 미리 열어 둔다.
+let audioUnlocked=false;
+function unlockAudio(){
+  if(audioUnlocked||!("speechSynthesis" in window)) return;
+  try{
+    const u=new SpeechSynthesisUtterance(" ");
+    u.volume=0; u.lang="en-US";
+    speechSynthesis.speak(u);
+    audioUnlocked=true;
+  }catch(e){}
+}
+document.addEventListener("pointerdown",unlockAudio,{capture:true});
+document.addEventListener("touchstart",unlockAudio,{capture:true,passive:true});
 
 // ---------- 화면 ----------
 const $=id=>document.getElementById(id);
